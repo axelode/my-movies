@@ -1,0 +1,16 @@
+<template>
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content">
+        <aside>
+            <p>Copyright © 2023 - All right reserved by {{ company }}</p>
+        </aside>
+    </footer>
+</template>
+
+<script>
+    export default {
+        name: "FooterList",
+        props: {
+            company: String,
+        }
+    }
+</script>
