@@ -1,7 +1,7 @@
 <template>
-    <footer class="footer footer-center p-4 bg-base-300 text-base-content">
+    <footer class="footer footer-center p-4 bg-primary text-base-content">
         <aside>
-            <p>Copyright © 2023 - All right reserved by {{ company }}</p>
+            <p>Copyright © 2024 - All right reserved by {{ title }}</p>
         </aside>
     </footer>
 </template>
@@ -10,7 +10,10 @@
     export default {
         name: "FooterList",
         props: {
-            company: String,
+            title: {
+                type: String,
+                required: true
+            },
         }
     }
 </script>

@@ -1,9 +1,9 @@
 <template>
   <div :data-theme="changesTheme">
-    <NavBar title="myMovies" @theme="themeChanges" />
+    <NavBar title="myMovies" @dataTheme="handleThemeChanges" />
     <PopulerList :dataPopularMovies="popularMovies"/>
     <SearchList :dataMovies="allMovies"/>
-    <FooterList company="myMovies"/>
+    <FooterList title="myMovies"/>
   </div>
 </template>
 
@@ -49,10 +49,8 @@
             console.error('Error fetching data:', error)
           });
       },
-      themeChanges(dataTheme) {
+      handleThemeChanges(dataTheme) {
         this.changesTheme = dataTheme
-
-        console.log(this.changesTheme)
       }
     },
   }

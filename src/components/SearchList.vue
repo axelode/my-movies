@@ -1,55 +1,92 @@
 <template>
-  <div class="grid">
-    <div class="flex gap-2 py-2">
-      <div class="flex-1">
-        <HeaderTitle title="Search"/>
-      </div>
-      <div class="flex justify-end pr-2 gap-2">
-        <input v-model="movieResult" type="text" placeholder="Type here" class="input input-bordered input-current w-44 h-8 text-current rounded-lg md:w-96 md:h-10" />
-      </div>
+  <div class="grid pt-8 pb-6 bg-primary">
+    <!-- search bar -->
+    <div class="relative flex justify-end pr-[16px] gap-2 mb-4">
+      <input
+        v-model="inputResult"
+        @change="findMovie"
+        @abort="findMovie"
+        type="text"
+        placeholder="Type here"
+        class="p-4 w-96 h-10 border-2 border-success text-black bg-white rounded-full"
+      />
+
+      <button class="absolute top-3 right-8 z-5" @click="findMovie">
+        <img
+          src="@/assets/icons/search.svg"
+          alt="search"
+        />
+      </button>
     </div>
 
-    <div v-if="searchMovies.length">
-      <div class="grid grid-cols-2 p-2 gap-2 md:grid-cols-4 lg:grid-cols-6">
-        <div v-for="movie in searchMovies" :key="movie.id">
-          <div class="card w-auto h-full bg-base-100 border border-current rounded-xl">
+    <!-- loader -->
+    <div class="w-full h-44 grid place-items-center" v-if="isLoading">
+      <div class="w-14 h-14 border-dotted border-8 border-current rounded-full animate-spin"></div>
+    </div>
+
+    <div v-if="searchMovies.length && !isLoading">
+      <div class="grid grid-cols-3 px-4 gap-4 md:grid-cols-5 lg:grid-cols-6">
+        <div v-for="movie in searchMovies" :key="movie.id" @click="popUp(movie)">
+          <div class="card w-auto h-full rounded-xl overflow-hidden shadow-2xl cursor-pointer">
             <figure><img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" alt="poster" /></figure>
-            <div class="card-body p-2 text-current">
-              <h2 class="card-title">{{ movie.title }}</h2>
-              <div class="card-actions justify-end">
-                  <div class="badge badge-outline rounded-xl">{{ movie.release_date }}</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-else class="grid place-content-center texx-xl font-bold text-current p-4">No Data Found</div>
+    <div v-else-if="!searchMovies.length && !isLoading" class="grid place-content-center text-xl font-bold text-current p-4">No Data Found !</div>
   </div>
+
+  <!-- popup -->
+  <PopUp v-if="isPopUp" :selectedMovie="selectedMovie" @closePopUp="handleClosePopUp"/>
 </template>
 
 <script>
-import HeaderTitle from "@/components/HeaderTitle.vue"
+import PopUp from "./PopUp.vue"
 
 export default {
     name: "SearchMovieList",
     components: {
-      HeaderTitle,
+      PopUp
     },
     data() {
       return {
+        inputResult: "",
         movieResult: "",
+        isLoading: false,
+        isPopUp: false,
+        selectedMovie: {}
       }
     },
     props: {
-      dataMovies: Array,
+      dataMovies: {},
     },
     computed: {
       searchMovies() {
-        const movieResult = this.movieResult.toLowerCase()
+        let movieResult = this.movieResult.toLowerCase()
         return this.dataMovies.filter(movie => movie.title.toLowerCase().includes(movieResult))
       }
-    }, 
+    },
+    methods: {
+      findMovie() {
+        this.isLoading = true
+
+        setTimeout(() => {
+          this.isLoading = false
+        }, 2200)
+
+        setTimeout(() => {
+          this.movieResult = this.inputResult
+        }, 2000)
+      },
+      popUp(movie) {
+        this.isPopUp = true
+        this.selectedMovie = movie
+      },
+      handleClosePopUp(dataPopUp) {
+        this.isPopUp = dataPopUp
+        this.selectedMovie = {}
+      },
+    }
 }
 </script>
